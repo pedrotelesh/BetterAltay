@@ -804,4 +804,3 @@ parameters:
 			message: "#^Parameter \\#1 \\$string of function trim expects string, string\\|false given\\.$#"
 			count: 1
 			path: ../../../src/pocketmine/utils/Timezone.php
-

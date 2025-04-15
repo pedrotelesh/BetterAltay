@@ -4,6 +4,9 @@ namespace pocketmine\network\mcpe\mapper;
 
 use InvalidArgumentException;
 use pocketmine\item\ItemFactory;
+use pocketmine\nbt\LittleEndianNBTStream;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\convert\ItemTranslator;
 use pocketmine\network\mcpe\protocol\CreativeContentPacket;
 use pocketmine\network\mcpe\protocol\types\inventory\CreativeGroupEntry;
 use pocketmine\network\mcpe\protocol\types\inventory\CreativeItemEntry;
@@ -22,6 +25,7 @@ class CreativeItemMapper {
 	/** @var array CreativeGroupEntry[] */
 	private array $groups = [];
 
+	private int $nextIconIndex = 1;
 	/** @var array CreativeItemEntry[] */
 	private array $icons = [];
 
@@ -40,13 +44,13 @@ class CreativeItemMapper {
 			$category = $group["category"];
 			$icon = $group["icon"];
 
-			try {
+			try{
 				$iconValue = ItemFactory::fromStringSingle($icon["id"]);
-			} catch (InvalidArgumentException $ignore) {
+			}catch(InvalidArgumentException $ignore){
 				$iconValue = ItemFactory::fromStringSingle("minecraft:air");
 			}
 
-			$categoryId = match($category) {
+			$categoryId = match ($category) {
 				"construction" => CreativeContentPacket::CATEGORY_CONSTRUCTION,
 				"nature" => CreativeContentPacket::CATEGORY_NATURE,
 				"equipment" => CreativeContentPacket::CATEGORY_EQUIPMENT,
@@ -60,15 +64,29 @@ class CreativeItemMapper {
 		if(!is_array($items) or !count($items))
 			throw new AssumptionFailedError("Missing required items");
 
-		$entryId = 1;
 		foreach($items as $item){
-			try{
-				$itemValue = ItemFactory::fromStringSingle($item["id"]);
-			}catch(InvalidArgumentException $ignore){
-				$itemValue = ItemFactory::fromStringSingle("minecraft:air");
+			[$id, $meta] = ItemTranslator::getInstance()->fromStringId($item["id"]);
+			$itemValue = ItemFactory::get($id, $meta);
+
+			if(isset($item["damage"])){
+				$itemValue->setDamage($item["damage"]);
 			}
 
-			$this->icons[] = new CreativeItemEntry($entryId++, $itemValue, $item["groupId"]);
+			if(isset($item["nbt_b64"])){
+				$nbtBytes = base64_decode($item["nbt_b64"]);
+				$nbtSerializer = new LittleEndianNBTStream();
+				$decodedNbt = $nbtSerializer->read($nbtBytes);
+
+				if(!($decodedNbt instanceof CompoundTag)){
+					throw new \UnexpectedValueException("Unexpected root tag type");
+				}
+				$itemValue->setNamedTag($decodedNbt);
+
+
+			}
+			if($itemValue->getName() !== "Unknown"){
+				$this->icons[] = new CreativeItemEntry($this->getNextIconIndex(), $itemValue, $item["groupId"]);
+			}
 		}
 
 		$this->initialized = true;
@@ -81,6 +99,10 @@ class CreativeItemMapper {
 		return $this->groups;
 	}
 
+	public function getNextIconIndex() : int{
+		return $this->nextIconIndex++;
+	}
+
 	/**
 	 * @return CreativeItemEntry[]
 	 */
@@ -88,4 +110,15 @@ class CreativeItemMapper {
 		return $this->icons;
 	}
 
+	public function removeIconByIndex(int $index) : void{
+		unset($this->icons[$index]);
+	}
+
+	public function addIcon(CreativeItemEntry $entry) : void {
+		$this->icons[] = $entry;
+	}
+
+	public function removeAllIcons() : void{
+		$this->icons = [];
+	}
 }

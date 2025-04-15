@@ -45,20 +45,18 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\NamedTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
+use pocketmine\network\mcpe\mapper\CreativeItemMapper;
+use pocketmine\network\mcpe\protocol\types\inventory\CreativeItemEntry;
 use pocketmine\Player;
 use pocketmine\utils\AssumptionFailedError;
 use pocketmine\utils\Binary;
 use function array_map;
 use function base64_decode;
 use function base64_encode;
-use function file_get_contents;
 use function get_class;
 use function hex2bin;
 use function is_string;
-use function json_decode;
 use function strlen;
-use const DIRECTORY_SEPARATOR;
-use const pocketmine\RESOURCE_PATH;
 
 class Item implements ItemIds, JsonSerializable{
 	public const TAG_ENCH = "ench";
@@ -119,41 +117,21 @@ class Item implements ItemIds, JsonSerializable{
 		return ItemFactory::fromString($str, $multiple);
 	}
 
-	/** @var Item[] */
-	private static $creative = [];
-
-	/**
-	 * @return void
-	 */
-	public static function initCreativeItems(){
-		self::clearCreativeItems();
-
-		$creativeItems = json_decode(file_get_contents(RESOURCE_PATH . "vanilla" . DIRECTORY_SEPARATOR . "creativeitems.json"), true);
-
-		foreach($creativeItems as $data){
-			$item = Item::jsonDeserialize($data);
-			if($item->getName() === "Unknown"){
-				continue;
-			}
-			self::addCreativeItem($item);
-		}
-	}
-
 	/**
 	 * Removes all previously added items from the creative menu.
 	 * Note: Players who are already online when this is called will not see this change.
 	 *
 	 * @return void
 	 */
-	public static function clearCreativeItems(){
-		Item::$creative = [];
+	public static function clearCreativeItems() : void{
+		CreativeItemMapper::getInstance()->removeAllIcons();
 	}
 
 	/**
 	 * @return Item[]
 	 */
 	public static function getCreativeItems() : array{
-		return Item::$creative;
+		return array_map(fn (CreativeItemEntry $entry) => $entry->getItem(), CreativeItemMapper::getInstance()->getIcons());
 	}
 
 	/**
@@ -162,8 +140,8 @@ class Item implements ItemIds, JsonSerializable{
 	 *
 	 * @return void
 	 */
-	public static function addCreativeItem(Item $item){
-		Item::$creative[] = clone $item;
+	public static function addCreativeItem(Item $item, int $group = 0) : void{
+		CreativeItemMapper::getInstance()->addIcon(new CreativeItemEntry(CreativeItemMapper::getInstance()->getNextIconIndex(), $item, $group));
 	}
 
 	/**
@@ -175,7 +153,7 @@ class Item implements ItemIds, JsonSerializable{
 	public static function removeCreativeItem(Item $item){
 		$index = self::getCreativeItemIndex($item);
 		if($index !== -1){
-			unset(Item::$creative[$index]);
+			CreativeItemMapper::getInstance()->removeIconByIndex($index);
 		}
 	}
 
@@ -183,17 +161,16 @@ class Item implements ItemIds, JsonSerializable{
 		return Item::getCreativeItemIndex($item) !== -1;
 	}
 
-	/**
-	 * @return Item|null
-	 */
-	public static function getCreativeItem(int $index){
-		return Item::$creative[$index] ?? null;
+	public static function getCreativeItem(int $index) : ?Item{
+		$icon = CreativeItemMapper::getInstance()->getIcons()[$index] ?? null;
+		return $icon?->getItem();
+
 	}
 
 	public static function getCreativeItemIndex(Item $item) : int{
-		foreach(Item::$creative as $i => $d){
-			if($item->equals($d, !($item instanceof Durable))){
-				return $i;
+		foreach(CreativeItemMapper::getInstance()->getIcons() as $index => $icon){
+			if ($item->equals($icon->getItem(), !($item instanceof Durable))) {
+				return $index;
 			}
 		}
 
