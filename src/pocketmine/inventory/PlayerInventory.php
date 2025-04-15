@@ -203,7 +203,12 @@ class PlayerInventory extends BaseInventory{
 		}
 
 		$mapper = CreativeItemMapper::getInstance();
+<<<<<<< HEAD
 		$holder->sendDataPacket(CreativeContentPacket::create($mapper->getGroups(), $mapper->getIcons()));
+=======
+		$isSpectator = $holder->isSpectator();
+		$holder->sendDataPacket(CreativeContentPacket::create(...($isSpectator ? [[], []] : [$mapper->getGroups(), $mapper->getIcons()])));
+>>>>>>> e6b31768b1cb36eefe8387f5634d72a821eeefeb
 	}
 
 	/**

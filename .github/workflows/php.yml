@@ -62,4 +62,8 @@ jobs:
           tag: ${{ steps.extract_version.outputs.tagversion }}
           name: "Release ${{ steps.extract_version.outputs.tagversion }}"
           generateReleaseNotes: true
+<<<<<<< HEAD
           artifacts: BetterAltay.phar
+=======
+          artifacts: BetterAltay.phar
+>>>>>>> e6b31768b1cb36eefe8387f5634d72a821eeefeb

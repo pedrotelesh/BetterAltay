@@ -6,15 +6,24 @@
 	<br>
 	This is a fork of <a href="https://github.com/pmmp/PocketMine-MP/tree/3.28.0">PocketMine-MP</a> and <a href="https://github.com/unresolved3169/Altay">Altay</a>.
 	<br><br>
+<<<<<<< HEAD
 	<i>This fork was created due to the inactivity of Altay and currently supports Minecraft: Bedrock Edition v1.21.73</i>
+=======
+	<i>This fork was created due to the inactivity of Altay and currently supports Minecraft: Bedrock Edition v1.21.71</i>
+>>>>>>> e6b31768b1cb36eefe8387f5634d72a821eeefeb
 	<br><br>
 
 <p align="center">
 	<a href="https://discord.gg/spquK3Q66W">
 		<img src="https://img.shields.io/discord/930544524655202317?color=5865F2&logo=discord&logoColor=white" alt="Discord">
 	</a>
+<<<<<<< HEAD
 	<a href="https://www.minecraft.net/en-us/article/minecraft-1-21-73-bedrock-changelog">
 		<img src="https://img.shields.io/badge/Minecraft_1.21.73-blue?style=flat-square" alt="Minecraft">
+=======
+	<a href="https://www.minecraft.net/en-us/article/minecraft-1-21-70-bedrock-changelog">
+		<img src="https://img.shields.io/badge/Minecraft_1.21.70-blue?style=flat-square" alt="Minecraft">
+>>>>>>> e6b31768b1cb36eefe8387f5634d72a821eeefeb
 	</a>
 	<a href="https://github.com/Mojang/bedrock-protocol-docs">
 		<img src="https://img.shields.io/badge/protocol-786-yellow?style=flat-square" alt="Protocol">

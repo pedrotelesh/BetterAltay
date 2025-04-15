@@ -284,6 +284,7 @@ interface ItemIds extends BlockIds{
 
     public const RECORD_PIGSTEP = 759;
 
+<<<<<<< HEAD
 	public const SPYGLASS = 772;
 	public const RECORD_OTHERSIDE = 773;
 
@@ -344,3 +345,29 @@ interface ItemIds extends BlockIds{
     public const WHITE_BUNDLE = 953;
     public const YELLOW_BUNDLE = 954;
 }
+=======
+	public const RECORD_5 = 636;
+
+	public const RECORD_RELIC = 701;
+
+	public const HONEYCOMB = 736;
+	public const HONEY_BOTTLE = 737;
+
+	public const NETHERITE_INGOT = 742;
+	public const NETHERITE_SWORD = 743;
+	public const NETHERITE_SHOVEL = 744;
+	public const NETHERITE_PICKAXE = 745;
+	public const NETHERITE_AXE = 746;
+	public const NETHERITE_HOE = 747;
+	public const NETHERITE_HELMET = 748;
+	public const NETHERITE_CHESTPLATE = 749;
+	public const NETHERITE_LEGGINGS = 750;
+	public const NETHERITE_BOOTS = 751;
+	public const NETHERITE_SCRAP = 752;
+
+	public const RECORD_PIGSTEP = 759;
+
+	public const SPYGLASS = 772;
+	public const RECORD_OTHERSIDE = 773;
+}
+>>>>>>> e6b31768b1cb36eefe8387f5634d72a821eeefeb

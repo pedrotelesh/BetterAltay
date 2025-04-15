@@ -41,7 +41,11 @@ interface ProtocolInfo{
 	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
 	public const MINECRAFT_VERSION = 'v' . self::MINECRAFT_VERSION_NETWORK;
 	/** Version number sent to clients in ping responses. */
+<<<<<<< HEAD
 	public const MINECRAFT_VERSION_NETWORK = '1.21.73';
+=======
+	public const MINECRAFT_VERSION_NETWORK = '1.21.70';
+>>>>>>> e6b31768b1cb36eefe8387f5634d72a821eeefeb
 
 	public const LOGIN_PACKET = 0x01;
 	public const PLAY_STATUS_PACKET = 0x02;
@@ -65,7 +69,10 @@ interface ProtocolInfo{
 	public const PASSENGER_JUMP_PACKET = 0x14;
 	public const UPDATE_BLOCK_PACKET = 0x15;
 	public const ADD_PAINTING_PACKET = 0x16;
+<<<<<<< HEAD
 	
+=======
+>>>>>>> e6b31768b1cb36eefe8387f5634d72a821eeefeb
 	public const LEVEL_EVENT_PACKET = 0x19;
 	public const BLOCK_EVENT_PACKET = 0x1a;
 	public const ACTOR_EVENT_PACKET = 0x1b;

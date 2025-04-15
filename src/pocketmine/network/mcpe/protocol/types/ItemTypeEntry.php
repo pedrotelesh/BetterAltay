@@ -49,4 +49,8 @@ final class ItemTypeEntry{
 	public function getItemVersion() : int{ return $this->itemVersion; }
 
 	public function getItemComponentData() : CompoundTag{ return $this->itemComponentData; }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> e6b31768b1cb36eefe8387f5634d72a821eeefeb
