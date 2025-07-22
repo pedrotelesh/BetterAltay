@@ -128,6 +128,9 @@ chunk-ticking:
   tick-radius: 3
   light-updates: false
   clear-tick-list: true
+  #Number of blocks inside ticking areas' subchunks that get ticked every tick. Higher values will accelerate events
+  #like tree and plant growth, but at a higher performance cost.
+  blocks-per-subchunk-per-tick: 3
   #IDs of blocks not to perform random ticking on.
   disable-block-ticking:
   #- 2 # grass
