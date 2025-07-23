@@ -289,7 +289,7 @@ class Level implements ChunkManager, Metadatable{
 	/** @var int */
 	private $chunksPerTick;
 	/** @var int */
-	private $blocksPerSubChunkPerTick;
+	private $tickedBlocksPerSubchunkPerTick;
 	/** @var bool */
 	private $clearChunksOnTick;
 	/** @var SplFixedArray<Block|null> */
@@ -445,7 +445,7 @@ class Level implements ChunkManager, Metadatable{
 		$this->chunksPerTick = (int) $this->server->getProperty("chunk-ticking.per-tick", 40);
 		$this->chunkPopulationQueueSize = (int) $this->server->getProperty("chunk-generation.population-queue-size", 2);
 		$this->clearChunksOnTick = (bool) $this->server->getProperty("chunk-ticking.clear-tick-list", true);
-		$this->blocksPerSubChunkPerTick = (int) $this->server->getProperty("chunk-ticking.blocks-per-subchunk-per-tick", 40);
+		$this->tickedBlocksPerSubchunkPerTick = (int) $this->server->getProperty("chunk-ticking.blocks-per-subchunk-per-tick", 40);
 
 		$dontTickBlocks = array_fill_keys($this->server->getProperty("chunk-ticking.disable-block-ticking", []), true);
 
@@ -1218,8 +1218,12 @@ class Level implements ChunkManager, Metadatable{
 
 			foreach($chunk->getSubChunks() as $Y => $subChunk){
 				if(!($subChunk instanceof EmptySubChunk)){
-					$k = mt_rand(0, 0xfffffffff); //36 bits
-					for($i = 0; $i < $this->blocksPerSubChunkPerTick; ++$i){
+					$k = 0;
+					for($i = 0; $i < $this->tickedBlocksPerSubchunkPerTick; ++$i){
+						if(($i % 5) === 0){
+							//60 bits will be used by 5 blocks (12 bits each)
+							$k = mt_rand(0, (1 << 60) - 1);
+						}
 						$x = $k & 0x0f;
 						$y = ($k >> 4) & 0x0f;
 						$z = ($k >> 8) & 0x0f;
